@@ -1,83 +1,80 @@
-import org.omg.PortableInterceptor.INACTIVE;
-
 import java.util.Objects;
 
 class List {
     private static final int INIT_LEN = 10;
     private Object[] items;  // the actual items
     private int numItems;     // the number of items currently in the list
-    private int currentObject;//номер текущего объекта
+    private int currentObject;//the number of current object
 
-    /* constructor: initialize the list to be empty
-     */
+    /**
+     *constructor: initialize the list to be empty */
     public List() {
         items = new Object[INIT_LEN];
         numItems = 0;
     }
 
-    /*Given: Object ob
-     * Do:    Add ob to the end of the list.
+    /**
+     * auxiliary method for adding object
      */
+    private void AddItem(Object ob){
+        items[numItems] = ob;
+        numItems++;
+        currentObject = numItems - 1;
+    }
+
+    /**Given: Object ob
+     * Do:    Add ob to the end of the list.*/
     public void AddToEnd(Object ob) {
         if (numItems < items.length) {
-            items[numItems] = ob;
-            numItems++;
-            currentObject = numItems - 1;
+            AddItem(ob);
         } else {
-            int l = items.length;
+            int currLength = items.length;//the length of the current list before increase it
             Object[] tmp = items;
-            items = new Object[2 * items.length];
-            System.arraycopy(tmp, 0, items, 0, l);//скопировали старые объекты в новый большой список
-            items[numItems] = ob;
-            numItems++;
-            currentObject = numItems;
+            items = new Object[2 * currLength];
+            System.arraycopy(tmp, 0, items, 0, currLength);//copy old objects to the new list
+            AddItem(ob);
         }
     }
 
-    /* Print (to standard output) the objects in the list in order, enclosed in
-     * square brackets, separated by spaces.
-     */
+    /** Print (to standard output) the objects in the list in order, enclosed in
+     * square brackets, separated by spaces.*/
     public void Print() {
-        System.out.print("[");
+        StringBuilder stmp = new StringBuilder("[");
         if (numItems > 0) {
             for (int i = 0; i < numItems; i++) {
-                System.out.print(items[i] + " ");
+                stmp.append(items[i] + " ");
             }
+            stmp.deleteCharAt(numItems-1);
         }
-        System.out.println("]");
+        stmp.append("]");
+        System.out.println(stmp.toString());
     }
 
-    /*
-    * делает текущим первый объект*/
+    /**
+    * set the first object as a current*/
     public void firstElement() {
         currentObject = 0;
     }
 
-    /*
+    /**
     * returns the current object, and also updates the currentObject field to "point to" the next object in the list*/
     public Object nextElement() {
-        Object tmp;
+        Object tmp = 0;
         if (currentObject < numItems && numItems != 0) {
             currentObject++;
             tmp = items[currentObject];
-        } else {
-            tmp = "error";
-        }
+        }//here must be a check(exception) if the text is an error text or just content
         return tmp;
     }
 
-    /*
+    /**
     * returns true if the list is not empty and the current-object "pointer" hasn't "fallen off"
     * the end of the list (i.e., if there are still more items in the list that haven't been accessed yet).
     * Note that this method should return true when the current-object "pointer" is pointing
     * to the last object in the list -- it should only return false
     * when the list is empty or the current-object pointer has "fallen off" the end of the list.*/
     public boolean hasMoreElements() {
-        boolean btmp = true;
-        if (currentObject >= (numItems - 1)) {
-            btmp = false;
-        }
-        return btmp;
+        return currentObject<(numItems - 1);
     }
 
     public static void main(String[] args) {
@@ -87,14 +84,6 @@ class List {
         for (int k = 0; k < n; k++) {
             test1.AddToEnd(k);
         }
-        /*test1.AddToEnd("be");
-        test1.AddToEnd("bu");
-        test1.AddToEnd("br");
-        test1.AddToEnd("bt");
-        test1.AddToEnd("by");
-        test1.AddToEnd("bi");
-        test1.AddToEnd("bo");
-        test1.AddToEnd("bp");*/
         test1.Print();
         test1.firstElement();
         while (test1.hasMoreElements()) {
