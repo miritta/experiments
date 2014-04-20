@@ -1,5 +1,5 @@
 public class FibonacciSequence {
-    public void Fibonacci(int edge) {
+    private void Fibonacci(int edge) {
         StringBuilder builder = new StringBuilder("1");//create an object String for print
         int prev = 0;//previous item
         int cur = 1;//current item
