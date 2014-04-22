@@ -1,35 +1,43 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class Vampire {
-    public static void main(String[] arg) {
-        int[] multi = new int[4];//for the results of multiply
-        int[] parts = new int[4];//for the multiplied digits
-        for (int num1 = 10; num1 < 100; num1++) {
-            for (int num2 = 10; num2 < 100; num2++) {
-                if ((num1 * num2 % 9) != (num1 + num2) % 9) {
-                    continue;//go to the next iteration
+    private List<Integer> vampireCalculate(int size) {
+        List<Integer> multi = new ArrayList<Integer>();
+        List<Integer> parts = new ArrayList<Integer>();
+        List<Integer> results = new ArrayList<Integer>();
+        int max = (int) Math.pow(10, size / 2);
+        int min = (int) Math.pow(10, size / 2 - 1);
+        for (int num1 = min; num1 < max; num1++) {
+            for (int num2 = min; num2 <= num1; num2++) {
+                if ((num1 * num2 % 9) != (num1 + num2) % 9) {// Pete Hartley's theoretical result: If x·y is a vampire number then x·y == x+y (mod 9)
+                    continue;
                 }
-                int result = num1*num2;
-                parts[1] = num1 % 10;
-                parts[0] = num1 / 10;
-                parts[2] = num2 / 10;
-                parts[3] = num2 % 10;
-                String s = Integer.toString(result);
-                for(int i=0;i<s.length();i++) {
-                    multi[i] = Character.getNumericValue(s.charAt(i));
+                int sum = num1 * num2;
+                for (int j = 0; j < size / 2; j++) {
+                    parts.add((int) ((num1 % Math.pow(10, j + 1)) / Math.pow(10, j)));
+                    parts.add((int) ((num2 % Math.pow(10, j + 1)) / Math.pow(10, j)));
                 }
-                int counter = 0;
-                for (int k = 0; k < 4; k++) {
-                    for (int m = 0; m < 4; m++) {
-                        if (multi[k] == parts[m]) {
-                            counter++;
-                            multi[k] = -1;
-                            parts[m] = -2;
-                            if (counter == 4) {
-                                System.out.println(num1 + "*" + num2 + " = " + result);
-                            }
-                        }
-                    }
+                String s = Integer.toString(sum);
+                for (int i = 0; i < s.length(); i++) {
+                    multi.add(Character.getNumericValue(s.charAt(i)));
                 }
+                Collections.sort(parts);
+                Collections.sort(multi);
+                if (parts.equals(multi)) {
+                    results.add(sum);
+                }
+                parts.clear();
+                multi.clear();
             }
         }
+        return results;
+    }
+
+    public static void main(String[] arg) {
+        int dim = 4;
+        System.out.println(Arrays.toString(new Vampire().vampireCalculate(dim).toArray()));
     }
 }
